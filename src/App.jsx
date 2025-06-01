@@ -21,6 +21,7 @@ import LoginPage from "@/pages/LoginPage";
 import ProfilePage from "@/pages/ProfilePage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PrintableDesignsPage from "@/pages/PrintableDesignsPage";
+import SignupPage from "@/pages/SignupPage";
 
 // Admin Pages
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
@@ -75,6 +76,7 @@ const MainApp = () => (
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route 
           path="/profile" 
           element={
