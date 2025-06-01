@@ -1,0 +1,185 @@
+
+export const initialProducts = [
+  {
+    id: "1",
+    name: "Classic Floral Door Design",
+    description: "Elegant floral pattern perfect for traditional homes. This design features intricate floral motifs that add a touch of sophistication to any door.",
+    price: 1499,
+    category: "traditional",
+    productType: "cnc",
+    imageUrl: "/classic-floral.jpg",
+    featured: true,
+    downloadFormat: "DXF, DWG",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: true
+  },
+  {
+    id: "2",
+    name: "Modern Geometric Pattern",
+    description: "Clean lines and geometric shapes for contemporary spaces. This minimalist design brings a modern aesthetic to your doors.",
+    price: 1899,
+    category: "modern",
+    productType: "cnc",
+    imageUrl: "/geometric.jpg",
+    featured: false,
+    downloadFormat: "DXF, DWG, STL",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: false
+  },
+  {
+    id: "3",
+    name: "Traditional Jali Design",
+    description: "Intricate jali work inspired by Indian heritage architecture. This design allows for both privacy and ventilation.",
+    price: 2199,
+    category: "traditional",
+    productType: "cnc",
+    imageUrl: "/jali.jpg",
+    featured: true,
+    downloadFormat: "DXF, DWG",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: true
+  },
+  {
+    id: "4",
+    name: "Contemporary Abstract Pattern",
+    description: "Bold abstract design for statement doors. This eye-catching pattern will make your doors stand out.",
+    price: 1799,
+    category: "modern",
+    productType: "cnc",
+    imageUrl: "/abstract.jpg",
+    featured: false,
+    downloadFormat: "DXF, DWG, STL",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: false
+  },
+  {
+    id: "5",
+    name: "Mandala Door Design",
+    description: "Spiritual mandala pattern with intricate details. This design brings a sense of peace and harmony to your space.",
+    price: 2499,
+    category: "traditional",
+    productType: "cnc",
+    imageUrl: "/mandala.jpg",
+    featured: true,
+    downloadFormat: "DXF, DWG",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: true
+  },
+  {
+    id: "6",
+    name: "Minimalist Line Art",
+    description: "Simple yet elegant line-based design. Perfect for those who appreciate understated elegance.",
+    price: 1299,
+    category: "modern",
+    productType: "cnc",
+    imageUrl: "/line-art.jpg",
+    featured: false,
+    downloadFormat: "DXF, DWG, STL",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: false
+  },
+  {
+    id: "7",
+    name: "Ornate Royal Door Design",
+    description: "Luxurious pattern inspired by royal palaces. This design brings a sense of grandeur to any entrance.",
+    price: 2999,
+    category: "luxury",
+    productType: "cnc",
+    imageUrl: "/royal.jpg",
+    featured: true,
+    downloadFormat: "DXF, DWG",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: false
+  },
+  {
+    id: "8",
+    name: "Nature-Inspired Tree Design",
+    description: "Beautiful tree pattern that brings nature indoors. This organic design creates a connection with the natural world.",
+    price: 1899,
+    category: "nature",
+    productType: "cnc",
+    imageUrl: "/tree.jpg",
+    featured: false,
+    downloadFormat: "DXF, DWG",
+    compatibility: "Compatible with all standard CNC machines",
+    dimensions: "Standard door size (7x3 ft)",
+    bestseller: true
+  },
+  {
+    id: "printable-1",
+    name: "Abstract Watercolor Splash",
+    description: "Vibrant abstract watercolor art, perfect for modern home decor. High-resolution for crisp prints.",
+    price: 499,
+    category: "abstract",
+    productType: "printable",
+    imageUrl: "/printable-abstract-watercolor.jpg",
+    featured: true,
+    downloadFormat: "JPG, PNG (300 DPI)",
+    dimensions: "A3, A4, 16x20 inches",
+    bestseller: true
+  },
+  {
+    id: "printable-2",
+    name: "Minimalist Botanical Line Art",
+    description: "Elegant botanical line drawing. Ideal for a clean and sophisticated look.",
+    price: 399,
+    category: "botanical",
+    productType: "printable",
+    imageUrl: "/printable-botanical-lineart.jpg",
+    featured: false,
+    downloadFormat: "PDF, SVG, PNG (300 DPI)",
+    dimensions: "Multiple sizes, scalable vector",
+    bestseller: false
+  },
+  {
+    id: "printable-3",
+    name: "Geometric Landscape",
+    description: "Modern geometric interpretation of a mountain landscape. Unique wall art.",
+    price: 599,
+    category: "geometric",
+    productType: "printable",
+    imageUrl: "/printable-geometric-landscape.jpg",
+    featured: true,
+    downloadFormat: "JPG, PNG (300 DPI)",
+    dimensions: "18x24 inches, 24x36 inches",
+    bestseller: true
+  },
+  {
+    id: "printable-4",
+    name: "Cute Animal Nursery Print",
+    description: "Adorable animal illustration for a child's nursery or playroom.",
+    price: 349,
+    category: "nursery",
+    productType: "printable",
+    imageUrl: "/printable-nursery-animal.jpg",
+    featured: false,
+    downloadFormat: "JPG, PNG (300 DPI)",
+    dimensions: "8x10 inches, 11x14 inches",
+    bestseller: false
+  }
+];
+
+export const categories = [
+  { id: "all", name: "All Designs", productType: "all" },
+  { id: "traditional", name: "Traditional", productType: "cnc" },
+  { id: "modern", name: "Modern", productType: "cnc" },
+  { id: "luxury", name: "Luxury", productType: "cnc" },
+  { id: "nature", name: "Nature-Inspired", productType: "cnc" },
+  { id: "abstract", name: "Abstract", productType: "printable" },
+  { id: "botanical", name: "Botanical", productType: "printable" },
+  { id: "geometric", name: "Geometric", productType: "printable" },
+  { id: "nursery", name: "Nursery", productType: "printable" }
+];
+
+export const productTypes = [
+    { id: "all", name: "All Types" },
+    { id: "cnc", name: "CNC Designs" },
+    { id: "printable", name: "Printable Art" }
+];
