@@ -13,7 +13,14 @@ const resetRoutes = require('./routes/reset');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://shreerangdesigns.in',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
