@@ -25,4 +25,21 @@ router.post('/', auth, async (req, res) => {
   res.status(201).json(order);
 });
 
+// Secure download endpoint
+router.get('/download/:orderId/:productId', auth, async (req, res) => {
+  const { orderId, productId } = req.params;
+  const order = await Order.findById(orderId).populate('products.product');
+  if (!order) return res.status(404).json({ message: 'Order not found' });
+  // Only allow if user owns the order or is admin
+  if (!req.user.isAdmin && String(order.user) !== req.user.id) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  const orderedProduct = order.products.find(p => String(p.product._id) === productId);
+  if (!orderedProduct) return res.status(404).json({ message: 'Product not found in order' });
+  const downloadUrl = orderedProduct.product.downloadUrl;
+  if (!downloadUrl) return res.status(404).json({ message: 'No download available' });
+  // Redirect to the download URL (could be a signed URL for S3, etc.)
+  return res.redirect(downloadUrl);
+});
+
 module.exports = router;

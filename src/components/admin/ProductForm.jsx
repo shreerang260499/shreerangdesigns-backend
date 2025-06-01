@@ -29,6 +29,7 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
     dimensions: '',
     featured: false,
     bestseller: false,
+    downloadUrl: '',
     ...initialData,
   });
 
@@ -131,9 +132,9 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL (placeholder)</Label>
-            <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="e.g., /my-image.jpg or https://..." />
-            <p className="text-xs text-muted-foreground">For now, use a placeholder URL. Image upload will be handled by Unsplash integration later.</p>
+            <Label htmlFor="imageUrl">Image URL (Pinterest placeholder supported)</Label>
+            <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="Paste a Pinterest image URL or any image link" />
+            <p className="text-xs text-muted-foreground">Paste a direct image URL from Pinterest or any image hosting site. Example: https://i.pinimg.com/...</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -153,6 +154,12 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
               <Input id="compatibility" name="compatibility" value={formData.compatibility} onChange={handleChange} placeholder="e.g., Compatible with all standard CNC machines" />
             </div>
           )}
+
+          <div className="space-y-2">
+            <Label htmlFor="downloadUrl">Download URL</Label>
+            <Input id="downloadUrl" name="downloadUrl" value={formData.downloadUrl || ''} onChange={handleChange} placeholder="https://... or /files/design.zip" />
+            <p className="text-xs text-muted-foreground">Paste a direct link to the downloadable file (Google Drive, Dropbox, S3, etc.).</p>
+          </div>
 
           <div className="flex items-center space-x-6 pt-4">
             <div className="flex items-center space-x-2">

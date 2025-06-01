@@ -12,12 +12,6 @@ const initialState = {
   promoCode: null,
 };
 
-// Sample promo codes (in a real app, these would come from a backend)
-const PROMO_CODES = {
-  SAVE10: { percentage: 10, description: "10% off your order" },
-  SHREE200: { fixedAmount: 200, description: "₹200 off your order" },
-};
-
 // Load cart from localStorage
 const loadCartFromStorage = () => {
   if (typeof window === "undefined") return initialState;
@@ -102,24 +96,14 @@ const cartReducer = (state, action) => {
     }
     
     case "APPLY_PROMO_CODE": {
-      const promoCode = action.payload.toUpperCase();
-      if (PROMO_CODES[promoCode]) {
-        const { total, discount } = calculateTotals(state.items, promoCode);
-        toast({
-          title: "Promo Code Applied",
-          description: PROMO_CODES[promoCode].description,
-        });
-        return { ...state, total, discount, promoCode };
-      } else {
-        toast({
-          title: "Invalid Promo Code",
-          description: "The promo code you entered is not valid.",
-          variant: "destructive",
-        });
-        // If an invalid code is entered, we might want to remove any existing valid code's effect
-        const { total, discount } = calculateTotals(state.items, null);
-        return { ...state, total, discount, promoCode: null };
-      }
+      const { code, discount, description } = action.payload;
+      const subtotal = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const total = subtotal - discount;
+      toast({
+        title: "Promo Code Applied",
+        description: description,
+      });
+      return { ...state, total, discount, promoCode: code };
     }
 
     case "REMOVE_PROMO_CODE": {
@@ -170,8 +154,15 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "CLEAR_CART" });
   };
 
-  const applyPromoCode = (code) => {
-    dispatch({ type: "APPLY_PROMO_CODE", payload: code });
+  const applyPromoCode = async (code) => {
+    try {
+      const res = await apiRequest(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/promocodes/validate`, 'POST', { code });
+      const discount = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0) * (res.discountPercent / 100);
+      dispatch({ type: "APPLY_PROMO_CODE", payload: { code, discount, description: res.description } });
+    } catch (err) {
+      toast({ title: "Invalid Promo Code", description: err.message, variant: "destructive" });
+      dispatch({ type: "REMOVE_PROMO_CODE" });
+    }
   };
 
   const removePromoCode = () => {

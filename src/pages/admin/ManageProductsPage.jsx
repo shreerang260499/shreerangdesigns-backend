@@ -27,13 +27,73 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
+const BulkAddModal = ({ open, onClose, onBulkAdd }) => {
+  const [csv, setCsv] = useState('');
+  const [preview, setPreview] = useState([]);
+  const [error, setError] = useState('');
+
+  const parseCsv = () => {
+    setError('');
+    try {
+      const lines = csv.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      const products = lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim());
+        const obj = {};
+        headers.forEach((h, i) => { obj[h] = values[i]; });
+        return obj;
+      });
+      setPreview(products);
+    } catch (e) {
+      setError('Invalid CSV format');
+    }
+  };
+
+  const handleBulkAdd = () => {
+    onBulkAdd(preview);
+    setCsv('');
+    setPreview([]);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Bulk Add Products (CSV)</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-2">
+          <textarea
+            className="w-full border rounded p-2 text-sm"
+            rows={6}
+            placeholder="name,description,price,category,productType,imageUrl,downloadFormat,compatibility,dimensions"
+            value={csv}
+            onChange={e => setCsv(e.target.value)}
+          />
+          <Button size="sm" onClick={parseCsv}>Preview</Button>
+          {error && <div className="text-red-500 text-xs">{error}</div>}
+          {preview.length > 0 && (
+            <div className="max-h-40 overflow-auto border rounded p-2 text-xs bg-muted/30">
+              <pre>{JSON.stringify(preview, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button onClick={handleBulkAdd} disabled={preview.length === 0}>Add All</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const ManageProductsPage = () => {
-  const { products, deleteProduct, loading } = useProducts();
+  const { products, deleteProduct, loading, addProduct } = useProducts();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [bulkOpen, setBulkOpen] = useState(false);
 
   const filteredProducts = products
     .filter(p => searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -48,6 +108,12 @@ const ManageProductsPage = () => {
     filterType === 'all' || cat.productType === filterType || cat.id === 'all'
   );
 
+  const handleBulkAdd = async (products) => {
+    for (const p of products) {
+      await addProduct(p);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -60,13 +126,18 @@ const ManageProductsPage = () => {
           <h1 className="text-3xl font-bold">Manage Products</h1>
           <p className="text-muted-foreground">View, edit, or delete your products.</p>
         </div>
-        <Link to="/admin/products/add">
-          <Button className="flex items-center gap-2 w-full sm:w-auto">
-            <PlusCircle className="h-4 w-4" /> Add New Product
+        <div className="flex gap-2">
+          <Link to="/admin/products/add">
+            <Button className="flex items-center gap-2 w-full sm:w-auto">
+              <PlusCircle className="h-4 w-4" /> Add New Product
+            </Button>
+          </Link>
+          <Button variant="outline" onClick={() => setBulkOpen(true)}>
+            Bulk Add Products
           </Button>
-        </Link>
+        </div>
       </div>
-
+      <BulkAddModal open={bulkOpen} onClose={() => setBulkOpen(false)} onBulkAdd={handleBulkAdd} />
       <Card>
         <CardHeader>
           <CardTitle>Product List</CardTitle>

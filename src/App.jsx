@@ -29,6 +29,7 @@ import ManageProductsPage from "@/pages/admin/ManageProductsPage";
 import AddProductPage from "@/pages/admin/AddProductPage";
 import EditProductPage from "@/pages/admin/EditProductPage";
 import CustomerManagementPage from "@/pages/admin/CustomerManagementPage";
+import PromoCodesPage from "@/pages/admin/PromoCodesPage";
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                         <Route path="products/add" element={<AddProductPage />} />
                         <Route path="products/edit/:id" element={<EditProductPage />} />
                         <Route path="customers" element={<CustomerManagementPage />} />
+                        <Route path="promocodes" element={<PromoCodesPage />} />
                       </Routes>
                     </AdminLayout>
                   </ProtectedRoute>

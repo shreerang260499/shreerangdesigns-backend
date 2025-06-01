@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Download, Calendar, AlertTriangle } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { getDownloadLink } from '@/lib/orders';
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -18,10 +19,9 @@ const ProfilePage = () => {
     );
   }
 
-  const handleRedownload = (itemName, downloadUrl, expiryDate) => {
+  const handleRedownload = (itemName, orderId, productId, expiryDate) => {
     const now = new Date();
     const expiry = new Date(expiryDate);
-
     if (now > expiry) {
       toast({
         title: "Download Expired",
@@ -29,14 +29,8 @@ const ProfilePage = () => {
         variant: "destructive",
       });
     } else {
-      // Simulate download
-      toast({
-        title: "Download Started",
-        description: `Downloading ${itemName}... (This is a mock download)`,
-      });
-      // In a real app, you would trigger a file download here:
-      // window.location.href = downloadUrl;
-      console.log("Mock download URL:", downloadUrl);
+      const downloadUrl = getDownloadLink(orderId, productId);
+      window.open(downloadUrl, '_blank');
     }
   };
 
@@ -96,9 +90,9 @@ const ProfilePage = () => {
                           <Button
                             size="sm"
                             variant={expired ? "secondary" : "default"}
-                            onClick={() => handleRedownload(item.name, item.downloadUrl, item.expiryDate)}
+                            onClick={() => handleRedownload(order.orderId, order.orderId, item.productId, item.expiryDate)}
                             className="mt-2 sm:mt-0 gap-1"
-                            disabled={expired && !item.downloadUrl} 
+                            disabled={expired}
                           >
                             <Download className="h-4 w-4" />
                             {expired ? "Expired" : "Re-download"}
