@@ -22,6 +22,8 @@ import ProfilePage from "@/pages/ProfilePage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PrintableDesignsPage from "@/pages/PrintableDesignsPage";
 import SignupPage from "@/pages/SignupPage";
+import ResetPasswordRequestPage from "@/pages/ResetPasswordRequestPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 
 // Admin Pages
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
@@ -87,6 +89,8 @@ const MainApp = () => (
             </ProtectedRoute>
           } 
         />
+        <Route path="/reset-password" element={<ResetPasswordRequestPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       </Routes>
     </main>
     <Footer />

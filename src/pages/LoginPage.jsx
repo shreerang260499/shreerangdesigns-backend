@@ -73,11 +73,16 @@ const LoginPage = () => {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="text-center text-sm">
+          <CardFooter className="text-center text-sm flex flex-col gap-2">
             <p>
               Don't have an account?{" "}
               <Link to="/signup" className="font-medium text-primary hover:underline">
                 Sign up
+              </Link>
+            </p>
+            <p>
+              <Link to="/reset-password" className="text-primary hover:underline">
+                Forgot password?
               </Link>
             </p>
           </CardFooter>

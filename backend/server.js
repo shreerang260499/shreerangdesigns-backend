@@ -8,6 +8,7 @@ const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
 const promoCodeRoutes = require('./routes/promocodes');
+const resetRoutes = require('./routes/reset');
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/promocodes', promoCodeRoutes);
+app.use('/api/reset', resetRoutes);
 
 const PORT = process.env.PORT || 5000;
 
