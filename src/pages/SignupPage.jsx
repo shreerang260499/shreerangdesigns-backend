@@ -11,6 +11,7 @@ const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const SignupPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await register(name, email, password);
+      await register(name, email, password, mobile);
       navigate("/login");
     } catch (error) {
       // Toast is handled in AuthContext
@@ -76,6 +77,19 @@ const SignupPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mobile">Mobile Number</Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  required
+                  pattern="[0-9]{10}"
                   disabled={isLoading}
                 />
               </div>

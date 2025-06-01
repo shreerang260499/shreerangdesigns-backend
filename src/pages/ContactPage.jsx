@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
@@ -71,15 +70,16 @@ const ContactPage = () => {
                 <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
                   <h3 className="font-medium">Email</h3>
-                  <p className="text-muted-foreground">info@shreerangdesigns.in</p>
+                  <p className="text-muted-foreground">info.shreerangdesigns@gmail.com</p>
                 </div>
               </div>
-              
               <div className="flex items-start gap-4">
                 <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <h3 className="font-medium">Phone</h3>
-                  <p className="text-muted-foreground">+91 98765 43210</p>
+                  <h3 className="font-medium">Phone / WhatsApp</h3>
+                  <p className="text-muted-foreground">
+                    <a href="https://wa.me/918982377005" target="_blank" rel="noopener noreferrer" className="hover:underline text-green-600 font-medium">+91 8982377005 (WhatsApp)</a>
+                  </p>
                 </div>
               </div>
               

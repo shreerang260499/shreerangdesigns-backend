@@ -41,10 +41,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Register
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, mobile) => {
     setLoading(true);
     try {
-      await apiRequest(`${API_URL}/auth/register`, 'POST', { name, email, password });
+      await apiRequest(`${API_URL}/auth/register`, 'POST', { name, email, password, mobile });
       toast({ title: 'Registration Successful', description: 'You can now log in.' });
     } catch (err) {
       toast({ title: 'Registration Failed', description: err.message, variant: 'destructive' });
