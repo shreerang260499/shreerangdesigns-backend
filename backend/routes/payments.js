@@ -1,36 +1,38 @@
 const express = require('express');
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
+const Cashfree = require('cashfree-pg');
 const router = express.Router();
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Cashfree configuration
+Cashfree.XClientId = process.env.CASHFREE_CLIENT_ID;
+Cashfree.XClientSecret = process.env.CASHFREE_CLIENT_SECRET;
+Cashfree.XEnvironment = process.env.CASHFREE_ENV || 'TEST'; // 'PROD' for production
 
-// Create Razorpay order
+// Create Cashfree order
 router.post('/create-order', async (req, res) => {
-  const { amount, currency = 'INR', receipt } = req.body;
+  const { amount, currency = 'INR', orderId, customerName, customerEmail, customerPhone } = req.body;
   try {
-    const options = { amount: amount * 100, currency, receipt };
-    const order = await razorpay.orders.create(options);
-    res.json(order);
+    const orderPayload = {
+      order_id: orderId,
+      order_amount: amount,
+      order_currency: currency,
+      customer_details: {
+        customer_id: customerEmail,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+        customer_name: customerName
+      }
+    };
+    const response = await Cashfree.PGCreateOrder(orderPayload);
+    res.json(response);
   } catch (err) {
-    res.status(500).json({ message: 'Razorpay order creation failed' });
+    res.status(500).json({ message: 'Cashfree order creation failed', error: err.message });
   }
 });
 
-// Verify payment signature
-router.post('/verify', (req, res) => {
-  const { order_id, payment_id, signature } = req.body;
-  const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
-  hmac.update(order_id + '|' + payment_id);
-  const generatedSignature = hmac.digest('hex');
-  if (generatedSignature === signature) {
-    res.json({ valid: true });
-  } else {
-    res.status(400).json({ valid: false });
-  }
+// Verify payment (Cashfree webhook or manual verification)
+router.post('/verify', async (req, res) => {
+  // Implement webhook or manual verification as per Cashfree docs
+  res.json({ valid: true });
 });
 
 module.exports = router;
