@@ -77,10 +77,10 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2">
           <img 
-            src="/logo-original.svg" 
+            src="/logo.png" 
             alt="ShreeRang Designs Logo" 
-            className="h-10 w-auto max-w-[200px] object-contain"
-            style={{ aspectRatio: '749/479' }}
+            className="h-14 w-auto max-w-[240px] object-contain py-1"
+            style={{ imageRendering: 'crisp-edges' }}
           />
         </Link>
 
