@@ -73,24 +73,15 @@ const cartReducer = (state, action) => {
     }
     
     case "REMOVE_ITEM": {
-      const itemToRemove = state.items.find(item => item.id === action.payload);
-      if (!itemToRemove) return state;
-
-      const newItems = state.items.filter(item => item.id !== action.payload);
+      const newItems = state.items.filter(item => item._id !== action.payload); // Use _id for filtering
       const { total, discount } = calculateTotals(newItems, state.promoCode);
-      
+
       toast({
         title: "Removed from cart",
         description: "Item has been removed from your cart.",
-        variant: "default",
       });
-      
-      return {
-        ...state,
-        items: newItems,
-        total,
-        discount,
-      };
+
+      return { ...state, items: newItems, total, discount };
     }
     
     case "APPLY_PROMO_CODE": {

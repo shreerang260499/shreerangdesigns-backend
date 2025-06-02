@@ -1,4 +1,3 @@
-
 import React from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,8 @@ const CartItem = ({ item, onRemove }) => {
         <img  
           className="h-full w-full object-cover" 
           alt={item.name}
-         src="https://images.unsplash.com/photo-1568572722184-a2e82ce38577" />
+          src={item.imageUrl} // Use the product's imageUrl field
+        />
       </div>
       
       <div className="ml-4 flex-1">
