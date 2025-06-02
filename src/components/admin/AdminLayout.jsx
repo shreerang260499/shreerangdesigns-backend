@@ -20,6 +20,7 @@ const AdminLayout = ({ children }) => {
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/products', icon: Package, label: 'Manage Products' },
     { href: '/admin/products/add', icon: PlusCircle, label: 'Add Product' },
+    { href: '/admin/promocodes', icon: Settings, label: 'Promo Codes' },
   ];
 
   return (

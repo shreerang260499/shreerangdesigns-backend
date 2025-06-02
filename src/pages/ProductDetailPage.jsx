@@ -54,9 +54,10 @@ const ProductDetailPage = () => {
           className="relative overflow-hidden rounded-lg border"
         >
           <img   
-            className="w-full h-auto object-cover aspect-square" 
+            className="w-full h-auto object-contain aspect-square bg-white" 
             alt={`${product.name} - ${product.productType === 'cnc' ? 'CNC door design' : 'Printable Art'}`}
-           src="https://images.unsplash.com/photo-1646193186132-7976c1670e81" />
+            src={product.imageUrl || "https://via.placeholder.com/800x800?text=No+Image"} 
+            onError={(e) => e.target.src = "https://via.placeholder.com/800x800?text=Image+Error"} />
           
           {product.bestseller && (
             <Badge 

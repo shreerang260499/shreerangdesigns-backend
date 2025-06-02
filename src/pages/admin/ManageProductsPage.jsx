@@ -194,9 +194,10 @@ const ManageProductsPage = () => {
                     <TableCell className="hidden sm:table-cell">
                       <img 
                         alt={product.name}
-                        className="aspect-square rounded-md object-cover"
+                        className="aspect-square rounded-md object-contain bg-white"
                         style={{ height: '64px', width: '64px' }}
-                       src="https://images.unsplash.com/photo-1646193186132-7976c1670e81" />
+                        src={product.imageUrl || "https://via.placeholder.com/64x64?text=No+Image"}
+                        onError={(e) => e.target.src = "https://via.placeholder.com/64x64?text=Error"} />
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell className="capitalize">{product.productType}</TableCell>

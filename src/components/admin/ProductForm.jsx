@@ -78,18 +78,38 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
     // Create FormData object for file upload
     const formDataObj = new FormData();
     
-    // Convert price to number before submitting
-    const submitData = { ...formData, price: formData.price ? parseFloat(formData.price) : 0 };
+    // Convert price to number and handle boolean values
+    const submitData = { 
+      ...formData,
+      price: formData.price ? parseFloat(formData.price) : 0,
+      featured: Boolean(formData.featured),
+      bestseller: Boolean(formData.bestseller)
+    };
+    
+    // Remove imagePreview from the data to be sent
+    delete submitData.imagePreview;
+    
+    // Sanitize imageUrl: if it's an array, use the first element; if it's a string, trim it
+    if (Array.isArray(submitData.imageUrl)) {
+      submitData.imageUrl = submitData.imageUrl[0] || '';
+    } else if (typeof submitData.imageUrl === 'string') {
+      submitData.imageUrl = submitData.imageUrl.trim();
+    }
     
     // Add image file to FormData if it exists
     const imageInput = document.querySelector('input[type="file"]');
     if (imageInput && imageInput.files[0]) {
       formDataObj.append('image', imageInput.files[0]);
+    } else if (formData.imageUrl) {
+      // If no new image is uploaded but there's an existing imageUrl, keep it
+      formDataObj.append('imageUrl', formData.imageUrl);
     }
     
     // Add other form data
     Object.keys(submitData).forEach(key => {
-      formDataObj.append(key, submitData[key]);
+      if (submitData[key] !== undefined && submitData[key] !== null) {
+        formDataObj.append(key, submitData[key]);
+      }
     });
     
     onSubmit(formDataObj);

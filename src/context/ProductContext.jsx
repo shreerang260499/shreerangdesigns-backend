@@ -54,7 +54,15 @@ export const ProductProvider = ({ children }) => {
   const updateProduct = async (productId, productData) => {
     setLoading(true);
     try {
-      const updated = await apiRequest(`${API_URL}/products/${productId}`, 'PUT', productData, token);
+      // Check if productData is FormData
+      const isFormData = productData instanceof FormData;
+      const updated = await apiRequest(
+        `${API_URL}/products/${productId}`, 
+        'PUT', 
+        productData, 
+        token,
+        isFormData
+      );
       setProducts(prev => prev.map(p => p._id === productId ? updated : p));
       toast({ title: 'Product Updated', description: `${updated.name} has been successfully updated.` });
     } catch (err) {
