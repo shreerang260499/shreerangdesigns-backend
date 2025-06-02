@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Hero from "@/components/Hero";
+import Hero from "@/components/hero";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import { useProducts } from "@/context/ProductContext";
 import { ArrowRight, Download, Shield, Clock } from "lucide-react";
