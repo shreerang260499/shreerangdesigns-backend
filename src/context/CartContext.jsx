@@ -73,7 +73,10 @@ const cartReducer = (state, action) => {
     }
     
     case "REMOVE_ITEM": {
+      console.log('Cart state before REMOVE_ITEM:', state.items); // Debug log
       const newItems = state.items.filter(item => item._id !== action.payload); // Use _id for filtering
+      console.log('Cart state after REMOVE_ITEM:', newItems); // Debug log
+
       const { total, discount } = calculateTotals(newItems, state.promoCode);
 
       toast({
