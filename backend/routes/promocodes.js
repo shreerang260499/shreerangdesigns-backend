@@ -45,7 +45,9 @@ router.delete('/:id', auth, async (req, res) => {
 // Public: Validate promo code
 router.post('/validate', async (req, res) => {
   const { code } = req.body;
+  console.log('Received promo code:', code); // Debug log
   const promo = await PromoCode.findOne({ code, active: true });
+  console.log('Promo code found:', promo); // Debug log
   if (!promo) return res.status(404).json({ message: 'Invalid or expired promo code' });
   if (promo.expiresAt && new Date() > promo.expiresAt) return res.status(400).json({ message: 'Promo code expired' });
   res.json({ discountPercent: promo.discountPercent, description: promo.description });
