@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 const CartContext = createContext();
 
 const initialState = {
-  items: [],
+  items: [], // Will store minimal item data: { _id, name, price, quantity }
   total: 0,
   discount: 0,
   promoCode: null,
@@ -35,11 +35,8 @@ const loadCartFromStorage = () => {
 const calculateTotals = (items, promoCode) => {
   // Remove all items with quantity 0
   const filteredItems = items.filter(item => item && item.quantity > 0);
-  console.log('Calculating totals for items:', filteredItems);
-
   let subtotal = filteredItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  console.log('Calculated subtotal:', subtotal);
-
+  
   let discount = 0;
   if (promoCode && PROMO_CODES[promoCode]) {
     const codeDetails = PROMO_CODES[promoCode];
@@ -48,11 +45,9 @@ const calculateTotals = (items, promoCode) => {
     } else if (codeDetails.fixedAmount) {
       discount = Math.min(subtotal, codeDetails.fixedAmount);
     }
-    console.log('Calculated discount:', discount);
   }
 
   const total = subtotal - discount;
-  console.log('Calculated total:', total);
 
   // Return both the filtered items and the totals
   return { items: filteredItems, subtotal, discount, total };
@@ -92,7 +87,16 @@ const cartReducer = (state, action) => {
 
       // Add new item with quantity 1 or specified quantity
       const quantity = action.payload.quantity || 1;
-      const updatedItems = [...state.items, { ...action.payload, quantity }];
+      // Only store essential product data
+      const minimalProduct = {
+        _id: action.payload._id,
+        name: action.payload.name,
+        price: action.payload.price,
+        imageUrl: action.payload.imageUrl,
+        category: action.payload.category,
+        quantity
+      };
+      const updatedItems = [...state.items, minimalProduct];
       const { items, subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
 
       toast({

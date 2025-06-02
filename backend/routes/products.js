@@ -5,12 +5,22 @@ const upload = require('../middleware/upload');
 
 const router = express.Router();
 
-// Get all products
+// Get all products with pagination
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();  // Convert to plain objects for better performance
+
     res.json(products);
   } catch (error) {
+    console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Error fetching products' });
   }
 });

@@ -10,23 +10,30 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const { token } = useAuth();
 
-  // Fetch products from backend
+  // Fetch products with pagination
   useEffect(() => {
     const fetchProducts = async () => {
+      if (!hasMore) return;
       setLoading(true);
       try {
-        const data = await apiRequest(`${API_URL}/products`);
-        setProducts(data);
+        const limit = 20; // Number of products per page
+        const data = await apiRequest(`${API_URL}/products?page=${page}&limit=${limit}`);
+        if (data.length < limit) {
+          setHasMore(false);
+        }
+        setProducts(prev => page === 1 ? data : [...prev, ...data]);
       } catch (err) {
-        setProducts([]);
+        if (page === 1) setProducts([]);
       } finally {
         setLoading(false);
       }
     };
     fetchProducts();
-  }, []);
+  }, [page]);
 
   // Add product (admin)
   const addProduct = async (productData) => {
@@ -88,8 +95,23 @@ export const ProductProvider = ({ children }) => {
 
   const getProductById = (productId) => products.find(p => p._id === productId);
 
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      setPage(prev => prev + 1);
+    }
+  };
+
   return (
-    <ProductContext.Provider value={{ products, loading, addProduct, updateProduct, deleteProduct, getProductById }}>
+    <ProductContext.Provider value={{ 
+      products, 
+      loading, 
+      hasMore,
+      loadMore,
+      addProduct, 
+      updateProduct, 
+      deleteProduct, 
+      getProductById 
+    }}>
       {children}
     </ProductContext.Provider>
   );

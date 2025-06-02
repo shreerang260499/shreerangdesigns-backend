@@ -13,9 +13,32 @@ const DesignsPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const categoryParam = queryParams.get("category");
   
-  const { products, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading, hasMore, loadMore } = useProducts();
   const cncProducts = products.filter(p => p.productType === 'cnc');
   const cncCategories = [{ id: "all", name: "All CNC Designs", productType: "cnc" }, ...allCategories.filter(c => c.productType === "cnc" || c.productType === "all" && c.id === "all")];
+  
+  const observerTarget = React.useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasMore && !productsLoading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [hasMore, productsLoading, loadMore]);
 
 
   const [selectedCategory, setSelectedCategory] = useState(categoryParam || "all");
@@ -86,6 +109,16 @@ const DesignsPage = () => {
           {filteredProducts.map(product => (
             <ProductCard key={product._id} product={product} />
           ))}
+          {hasMore && (
+            <div 
+              ref={observerTarget}
+              className="col-span-full flex justify-center py-8"
+            >
+              {productsLoading && (
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              )}
+            </div>
+          )}
         </motion.div>
       ) : (
         <div className="text-center py-12">

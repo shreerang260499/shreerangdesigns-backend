@@ -23,6 +23,10 @@ const ProductCard = ({ product }) => {
         <Link to={`/designs/${product._id}`}>
           <div className="aspect-square relative overflow-hidden">
             <img   
+              loading="lazy"
+              decoding="async"
+              width={400}
+              height={400}
               className="object-contain w-full h-full transition-transform duration-300 hover:scale-105 bg-white" 
               alt={`${product.name} - ${product.productType === 'cnc' ? 'CNC door design' : 'Printable Art'}`}
               src={product.imageUrl || "https://via.placeholder.com/400x400?text=No+Image"} 
