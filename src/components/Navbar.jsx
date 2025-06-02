@@ -75,13 +75,17 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center gap-2">
           <img 
             src="/logo.png" 
             alt="ShreeRang Designs Logo" 
-            className="h-14 w-auto max-w-[240px] object-contain py-1"
+            className="h-14 w-auto max-w-[200px] object-contain py-1"
             style={{ imageRendering: 'crisp-edges' }}
           />
+          <div className="hidden sm:flex flex-col">
+            <span className="text-xl font-bold tracking-tight">ShreeRang</span>
+            <span className="text-sm text-muted-foreground">Designs</span>
+          </div>
         </Link>
 
         <NavigationMenu className="hidden md:flex">

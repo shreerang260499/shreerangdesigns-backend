@@ -24,6 +24,8 @@ import PrintableDesignsPage from "@/pages/PrintableDesignsPage";
 import SignupPage from "@/pages/SignupPage";
 import ResetPasswordRequestPage from "@/pages/ResetPasswordRequestPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 
 // Admin Pages
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
@@ -91,6 +93,8 @@ const MainApp = () => (
         />
         <Route path="/reset-password" element={<ResetPasswordRequestPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
       </Routes>
     </main>
     <Footer />
