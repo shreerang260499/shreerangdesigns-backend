@@ -59,6 +59,8 @@ const cartReducer = (state, action) => {
         // If the item already exists, increase its quantity
         const updatedItems = [...state.items];
         updatedItems[existingItemIndex].quantity += action.payload.quantity || 1;
+        // Debug log to check cart state after adding an item
+        console.log('Cart state after ADD_ITEM:', updatedItems);
         return { ...state, items: updatedItems };
       } else {
         // Add the new item with a default quantity of 1
