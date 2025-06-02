@@ -23,6 +23,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Serve static files
+app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static('public/images'));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);

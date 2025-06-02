@@ -30,6 +30,7 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
     featured: false,
     bestseller: false,
     downloadUrl: '',
+    imagePreview: '',
     ...initialData,
   });
 
@@ -71,11 +72,27 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Create FormData object for file upload
+    const formDataObj = new FormData();
+    
     // Convert price to number before submitting
     const submitData = { ...formData, price: formData.price ? parseFloat(formData.price) : 0 };
-    onSubmit(submitData);
+    
+    // Add image file to FormData if it exists
+    const imageInput = document.querySelector('input[type="file"]');
+    if (imageInput && imageInput.files[0]) {
+      formDataObj.append('image', imageInput.files[0]);
+    }
+    
+    // Add other form data
+    Object.keys(submitData).forEach(key => {
+      formDataObj.append(key, submitData[key]);
+    });
+    
+    onSubmit(formDataObj);
   };
 
   return (
@@ -133,10 +150,42 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL (Pinterest placeholder supported)</Label>
-            <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="Paste a Pinterest image URL or any image link" />
-            <p className="text-xs text-muted-foreground">Paste a direct image URL from Pinterest or any image hosting site. Example: https://i.pinimg.com/...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="imageUpload">Image Upload</Label>
+              <Input 
+                id="imageUpload" 
+                name="imageUpload" 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    // Create a preview URL
+                    const previewUrl = URL.createObjectURL(e.target.files[0]);
+                    setFormData(prev => ({ ...prev, imagePreview: previewUrl }));
+                  }
+                }}
+              />
+              {(formData.imagePreview || formData.imageUrl) && (
+                <div className="mt-2">
+                  <img 
+                    src={formData.imagePreview || formData.imageUrl} 
+                    alt="Product preview" 
+                    className="w-full max-w-[200px] h-auto rounded-md"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="imageUrl">Image URL (Optional)</Label>
+              <Input 
+                id="imageUrl" 
+                name="imageUrl" 
+                value={formData.imageUrl || ''} 
+                onChange={handleChange}
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

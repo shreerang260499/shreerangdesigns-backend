@@ -190,7 +190,7 @@ const ManageProductsPage = () => {
             <TableBody>
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
-                  <TableRow key={product.id}>
+                  <TableRow key={product._id}>
                     <TableCell className="hidden sm:table-cell">
                       <img 
                         alt={product.name}
@@ -204,7 +204,7 @@ const ManageProductsPage = () => {
                     <TableCell>{formatPrice(product.price)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
-                        <Link to={`/admin/products/edit/${product.id}`}>
+                        <Link to={`/admin/products/edit/${product._id}`}>
                           <Button variant="outline" size="icon">
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -224,7 +224,7 @@ const ManageProductsPage = () => {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => deleteProduct(product.id)}>
+                              <AlertDialogAction onClick={() => deleteProduct(product._id)}>
                                 Delete
                               </AlertDialogAction>
                             </AlertDialogFooter>

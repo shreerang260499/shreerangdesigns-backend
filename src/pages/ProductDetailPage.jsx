@@ -36,7 +36,7 @@ const ProductDetailPage = () => {
   }
   
   const relatedProducts = products
-    .filter(p => p.id !== product.id && p.category === product.category && p.productType === product.productType)
+    .filter(p => p._id !== product._id && p.category === product.category && p.productType === product.productType)
     .slice(0, 3);
 
   return (
@@ -125,7 +125,7 @@ const ProductDetailPage = () => {
           <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedProducts.map(relatedP => (
-              <ProductCard key={relatedP.id} product={relatedP} />
+              <ProductCard key={relatedP._id} product={relatedP} />
             ))}
           </div>
         </div>

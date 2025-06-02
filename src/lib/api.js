@@ -1,11 +1,12 @@
 // Utility for API calls with JWT support
-export const apiRequest = async (url, method = 'GET', data = null, token = null) => {
-  const headers = { 'Content-Type': 'application/json' };
+export const apiRequest = async (url, method = 'GET', data = null, token = null, isFormData = false) => {
+  const headers = isFormData ? {} : { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
+  
   const options = {
     method,
     headers,
-    ...(data && { body: JSON.stringify(data) })
+    body: isFormData ? data : (data ? JSON.stringify(data) : undefined)
   };
   const response = await fetch(url, options);
   if (!response.ok) {

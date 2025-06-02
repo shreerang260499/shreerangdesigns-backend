@@ -32,7 +32,15 @@ export const ProductProvider = ({ children }) => {
   const addProduct = async (productData) => {
     setLoading(true);
     try {
-      const newProduct = await apiRequest(`${API_URL}/products`, 'POST', productData, token);
+      // Check if productData is FormData
+      const isFormData = productData instanceof FormData;
+      const newProduct = await apiRequest(
+        `${API_URL}/products`, 
+        'POST', 
+        productData, 
+        token,
+        isFormData
+      );
       setProducts(prev => [...prev, newProduct]);
       toast({ title: 'Product Added', description: `${newProduct.name} has been successfully added.` });
     } catch (err) {

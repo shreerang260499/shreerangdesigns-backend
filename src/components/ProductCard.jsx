@@ -20,12 +20,13 @@ const ProductCard = ({ product }) => {
       className="product-card"
     >
       <Card className="overflow-hidden h-full flex flex-col">
-        <Link to={`/designs/${product.id}`}>
+        <Link to={`/designs/${product._id}`}>
           <div className="aspect-square relative overflow-hidden">
             <img   
               className="object-cover w-full h-full transition-transform duration-300 hover:scale-105" 
               alt={`${product.name} - ${product.productType === 'cnc' ? 'CNC door design' : 'Printable Art'}`}
-             src="https://images.unsplash.com/photo-1495224814653-94f36c0a31ea" />
+              src={product.imageUrl || "https://via.placeholder.com/400x400?text=No+Image"} 
+              onError={(e) => e.target.src = "https://via.placeholder.com/400x400?text=Image+Error"} />
             
             {product.bestseller && (
               <Badge 
