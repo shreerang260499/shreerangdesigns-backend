@@ -12,7 +12,7 @@ const Hero = () => {
         <img  
           className="w-full h-full object-cover" 
           alt="Elegant CNC door design showcase"
-         src="https://images.unsplash.com/photo-1565119777359-49e7adb60cba" />
+         src="https://i.pinimg.com/736x/96/6c/68/966c68cba1d055cc03ff745076e41a3c.jpg
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-background/60" />
       </div>
       
