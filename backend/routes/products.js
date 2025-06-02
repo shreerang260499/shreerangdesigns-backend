@@ -46,7 +46,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
     
     // If an image was uploaded, add its path to the product data
     if (req.file) {
-      productData.imageUrl = `/images/${req.file.filename}`;
+      productData.imageUrl = req.file.path.trim(); // Use Cloudinary URL and sanitize
     }
     
     const product = new Product(productData);
@@ -78,7 +78,7 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
     
     // If an image was uploaded, add its path to the update data
     if (req.file) {
-      updateData.imageUrl = `/images/${req.file.filename}`;
+      updateData.imageUrl = req.file.path.trim(); // Use Cloudinary URL and sanitize
     }
     
     const product = await Product.findByIdAndUpdate(
