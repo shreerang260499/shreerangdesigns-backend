@@ -123,7 +123,7 @@ const CartPage = () => {
                   <div className="divide-y">
                     {items.map((item) => (
                       <CartItem 
-                        key={item.id} 
+                        key={item._id} // Use _id for unique key
                         item={item} 
                         onRemove={removeItem} 
                       />
