@@ -95,7 +95,7 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="price">Price (INR)</Label>
-              <Input id="price" name="price" type="text" inputMode="decimal" pattern="^\\d+(\\.\\d{0,2})?$" min="0" value={formData.price} onChange={handleChange} required />
+              <Input id="price" name="price" type="number" step="0.01" min="0" value={formData.price} onChange={handleChange} required onWheel={e => e.target.blur()} onKeyDown={e => (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') && e.preventDefault()} />
             </div>
           </div>
 
