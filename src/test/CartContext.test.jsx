@@ -18,10 +18,10 @@ beforeEach(() => {
   );
 });
 
-describe('CartContext', () => {
-  it('should add items to the cart and calculate subtotal correctly', () => {
+describe('CartContext', () => {  it('should add item to cart only once and prevent duplicates', () => {
     const { result } = renderHook(() => useCart(), { wrapper });
 
+    // First attempt - should add successfully
     act(() => {
       result.current.addItem(mockItem1);
     });
@@ -29,36 +29,44 @@ describe('CartContext', () => {
     expect(result.current.items).toHaveLength(1);
     expect(result.current.subtotal).toBe(100);
 
+    // Second attempt - should not add duplicate
+    act(() => {
+      result.current.addItem(mockItem1);
+    });
+
+    // Length should still be 1 and subtotal unchanged
+    expect(result.current.items).toHaveLength(1);
+    expect(result.current.subtotal).toBe(100);
+
+    // Different item should be added successfully
     act(() => {
       result.current.addItem(mockItem2);
     });
 
     expect(result.current.items).toHaveLength(2);
     expect(result.current.subtotal).toBe(300);
-  });  it('should remove items from the cart and update subtotal correctly', () => {
+  });  it('should remove entire item from cart when remove is clicked', () => {
     const { result } = renderHook(() => useCart(), { wrapper });
 
-    // Add first item
+    // Add two items
     act(() => {
-      result.current.addItem({ ...mockItem1, quantity: 1 });
-    });
-
-    // Add second item
-    act(() => {
-      result.current.addItem({ ...mockItem2, quantity: 1 });
+      result.current.addItem(mockItem1);
+      result.current.addItem(mockItem2);
     });
 
     expect(result.current.items).toHaveLength(2);
     expect(result.current.subtotal).toBe(300);
 
-    // Remove first item
+    // Remove first item - should remove completely
     act(() => {
       result.current.removeItem(mockItem1._id);
     });
 
+    // Should have only one item left
     expect(result.current.items).toHaveLength(1);
     expect(result.current.subtotal).toBe(200);
-  });  it('should handle edge cases like items with quantity 0', () => {
+    expect(result.current.items[0]._id).toBe(mockItem2._id);
+  });it('should handle edge cases like items with quantity 0', () => {
     const { result } = renderHook(() => useCart(), { wrapper });
 
     // Try to add item with quantity 0

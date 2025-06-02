@@ -23,7 +23,7 @@ const CartItem = ({ item, onRemove }) => {
       <Button 
         variant="ghost" 
         size="icon" 
-        onClick={() => onRemove(item.id)}
+        onClick={() => onRemove(item._id)} // Fixed: Using item._id instead of item.id
         className="text-muted-foreground hover:text-foreground"
       >
         <X className="h-4 w-4" />

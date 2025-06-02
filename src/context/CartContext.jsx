@@ -33,11 +33,12 @@ const loadCartFromStorage = () => {
 };
 
 const calculateTotals = (items, promoCode) => {
-  const filteredItems = items.filter(item => item.quantity > 0); // Ensure no items with quantity 0
-  console.log('Calculating totals for items:', filteredItems); // Debug log
+  // Remove all items with quantity 0
+  const filteredItems = items.filter(item => item && item.quantity > 0);
+  console.log('Calculating totals for items:', filteredItems);
 
   let subtotal = filteredItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  console.log('Calculated subtotal:', subtotal); // Debug log
+  console.log('Calculated subtotal:', subtotal);
 
   let discount = 0;
   if (promoCode && PROMO_CODES[promoCode]) {
@@ -45,67 +46,78 @@ const calculateTotals = (items, promoCode) => {
     if (codeDetails.percentage) {
       discount = (subtotal * codeDetails.percentage) / 100;
     } else if (codeDetails.fixedAmount) {
-      discount = Math.min(subtotal, codeDetails.fixedAmount); // Ensure discount isn't more than subtotal
+      discount = Math.min(subtotal, codeDetails.fixedAmount);
     }
-    console.log('Calculated discount:', discount); // Debug log
+    console.log('Calculated discount:', discount);
   }
 
   const total = subtotal - discount;
-  console.log('Calculated total:', total); // Debug log
+  console.log('Calculated total:', total);
 
-  return { subtotal, discount, total };
+  // Return both the filtered items and the totals
+  return { items: filteredItems, subtotal, discount, total };
 };
 
 const cartReducer = (state, action) => {
   switch (action.type) {
     case "ADD_ITEM": {
+      // Check if item has quantity 0
+      if (action.payload.quantity === 0) {
+        // If the item exists in cart, remove it
+        const updatedItems = state.items.filter(item => item._id !== action.payload._id);
+        const { items, subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
+
+        toast({
+          title: "फाइल हटा दी गई",
+          description: "मात्रा 0 होने के कारण फाइल कार्ट से हटा दी गई है",
+          variant: "default",
+        });
+
+        return { ...state, items, subtotal, total, discount };
+      }
+
+      // Check for duplicate item
       const existingItemIndex = state.items.findIndex(
         (item) => item._id === action.payload._id
       );
 
-      let updatedItems = [...state.items];
-      const quantity = action.payload.quantity ?? 1; // Use nullish coalescing to allow explicit 0
-
       if (existingItemIndex > -1) {
-        if (quantity > 0) {
-          updatedItems[existingItemIndex] = {
-            ...updatedItems[existingItemIndex],
-            quantity: updatedItems[existingItemIndex].quantity + quantity
-          };
-        } else {
-          updatedItems.splice(existingItemIndex, 1);
-        }
-      } else if (quantity > 0) {
-        updatedItems.push({
-          ...action.payload,
-          quantity
+        toast({
+          title: "फाइल पहले से कार्ट में है",
+          description: "यह डिजाइन फाइल पहले से ही आपके कार्ट में मौजूद है",
+          variant: "default",
         });
+        return state;
       }
 
-      // Filter out any items with quantity <= 0
-      updatedItems = updatedItems.filter(item => item.quantity > 0);
-      const { subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
-      return { ...state, items: updatedItems, subtotal, total, discount };
+      // Add new item with quantity 1 or specified quantity
+      const quantity = action.payload.quantity || 1;
+      const updatedItems = [...state.items, { ...action.payload, quantity }];
+      const { items, subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
+
+      toast({
+        title: "कार्ट में जोड़ा गया",
+        description: "डिजाइन फाइल कार्ट में जोड़ दी गई है",
+        variant: "default",
+      });
+
+      return { ...state, items, subtotal, total, discount };
     }
 
     case "REMOVE_ITEM": {
       const existingItemIndex = state.items.findIndex(item => item._id === action.payload);
       if (existingItemIndex === -1) return state;
 
-      let updatedItems = [...state.items];
-      if (updatedItems[existingItemIndex].quantity > 1) {
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity - 1
-        };
-      } else {
-        updatedItems.splice(existingItemIndex, 1);
-      }
+      const updatedItems = state.items.filter(item => item._id !== action.payload);
+      const { items, subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
 
-      // Filter out any items with quantity <= 0
-      updatedItems = updatedItems.filter(item => item.quantity > 0);
-      const { subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
-      return { ...state, items: updatedItems, subtotal, total, discount };
+      toast({
+        title: "फाइल हटा दी गई",
+        description: "डिजाइन फाइल कार्ट से हटा दी गई है",
+        variant: "default",
+      });
+
+      return { ...state, items, subtotal, total, discount };
     }
     
     case "APPLY_PROMO_CODE": {
