@@ -21,6 +21,27 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    // Social login: check for token in URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      // Fetch user info from backend using token
+      (async () => {
+        try {
+          const res = await apiRequest(`${API_URL}/auth/me`, 'GET', null, token);
+          setUser(res.user);
+          setToken(token);
+          localStorage.setItem('shreerangUser', JSON.stringify(res.user));
+          localStorage.setItem('shreerangToken', token);
+          toast({ title: 'Login Successful', description: 'Welcome back!' });
+        } catch (err) {
+          toast({ title: 'Social Login Failed', description: err.message, variant: 'destructive' });
+        }
+      })();
+    }
+  }, []);
+
   // Login with backend
   const login = async (email, password) => {
     setLoading(true);

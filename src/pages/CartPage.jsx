@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ShoppingCart, Tag, XCircle } from "lucide-react";
@@ -28,11 +28,11 @@ const CartPage = () => {
   const navigate = useNavigate();
   const [promoCodeInput, setPromoCodeInput] = useState("");
   
-  const loadRazorpayScript = () => {
+  const loadCashfreeScript = () => {
     return new Promise((resolve) => {
-      if (window.Razorpay) return resolve(true);
+      if (window.Cashfree) return resolve(true);
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = 'https://sdk.cashfree.com/js/ui/2.0.0/cashfree.prod.js';
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -58,62 +58,29 @@ const CartPage = () => {
       return;
     }
     try {
-      // 1. Create Razorpay order via backend
+      // 1. Create Cashfree order via backend
+      const orderId = `order_${generateId()}`;
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/payments/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total, receipt: `order_rcptid_${generateId()}` })
+        body: JSON.stringify({
+          amount: total,
+          orderId,
+          customerName: user.name,
+          customerEmail: user.email,
+          customerPhone: user.mobile || '9999999999',
+        })
       });
-      const razorpayOrder = await res.json();
-      if (!razorpayOrder.id) throw new Error('Failed to create payment order');
+      const data = await res.json();
+      if (!data.payment_session_id) throw new Error('Failed to create payment order');
 
-      // 2. Load Razorpay script
-      const loaded = await loadRazorpayScript();
-      if (!loaded) throw new Error('Razorpay SDK failed to load');
+      // 2. Load Cashfree script
+      const loaded = await loadCashfreeScript();
+      if (!loaded) throw new Error('Cashfree SDK failed to load');
 
-      // 3. Open Razorpay modal
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Set this in your .env file
-        amount: razorpayOrder.amount,
-        currency: razorpayOrder.currency,
-        name: 'ShreeRang Designs',
-        description: 'Order Payment',
-        order_id: razorpayOrder.id,
-        handler: async function (response) {
-          // 4. Verify payment
-          const verifyRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/payments/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              order_id: razorpayOrder.id,
-              payment_id: response.razorpay_payment_id,
-              signature: response.razorpay_signature
-            })
-          });
-          const verifyData = await verifyRes.json();
-          if (verifyData.valid) {
-            // 5. Place order in backend
-            const orderData = {
-              products: items.map(item => ({ product: item._id, quantity: item.quantity })),
-              amount: total,
-              paymentId: response.razorpay_payment_id
-            };
-            await placeOrder(orderData);
-            clearCart();
-            toast({ title: "Order Placed", description: "Thank you for your purchase!" });
-            navigate("/profile");
-          } else {
-            toast({ title: "Payment Verification Failed", description: "Please contact support.", variant: "destructive" });
-          }
-        },
-        prefill: {
-          name: user.name,
-          email: user.email
-        },
-        theme: { color: '#6366f1' }
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      // 3. Open Cashfree payment modal
+      const cashfree = new window.Cashfree(data.payment_session_id);
+      cashfree.redirect();
     } catch (err) {
       toast({ title: "Checkout Failed", description: err.message, variant: "destructive" });
     }
@@ -213,10 +180,10 @@ const CartPage = () => {
                   <div className="mt-6 space-y-2">
                     <Button 
                       size="lg" 
-                      className="w-full"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-lg"
                       onClick={handleCheckout}
                     >
-                      Proceed to Checkout
+                      Pay Securely with Cashfree
                     </Button>
                     <Button 
                       variant="outline" 

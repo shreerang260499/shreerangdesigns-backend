@@ -28,6 +28,11 @@ const LoginPage = () => {
     }
   };
 
+  // Social login handler
+  const handleSocialLogin = (provider) => {
+    window.location.href = `${import.meta.env.VITE_API_URL.replace('/api','')}/api/auth/${provider}`;
+  };
+
   return (
     <div className="container flex min-h-[calc(100vh-10rem)] items-center justify-center py-12">
       <motion.div
@@ -44,6 +49,12 @@ const LoginPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="flex flex-col gap-2 mb-4">
+              <Button variant="outline" className="w-full" onClick={() => handleSocialLogin('google')}>
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{width:20,marginRight:8,display:'inline'}} />
+                Sign in with Google
+              </Button>
+            </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>

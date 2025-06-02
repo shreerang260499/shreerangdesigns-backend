@@ -29,6 +29,11 @@ const SignupPage = () => {
     }
   };
 
+  // Social login handler
+  const handleSocialLogin = (provider) => {
+    window.location.href = `${import.meta.env.VITE_API_URL.replace('/api','')}/api/auth/${provider}`;
+  };
+
   return (
     <div className="container flex min-h-[calc(100vh-10rem)] items-center justify-center py-12">
       <motion.div
@@ -97,6 +102,12 @@ const SignupPage = () => {
                 {isLoading ? "Signing up..." : "Sign Up"}
               </Button>
             </form>
+            <div className="flex flex-col gap-2 mb-4">
+              <Button variant="outline" className="w-full" onClick={() => handleSocialLogin('google')}>
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{width:20,marginRight:8,display:'inline'}} />
+                Sign up with Google
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="text-center text-sm">
             <p>

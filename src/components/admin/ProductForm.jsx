@@ -73,7 +73,9 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // Convert price to number before submitting
+    const submitData = { ...formData, price: formData.price ? parseFloat(formData.price) : 0 };
+    onSubmit(submitData);
   };
 
   return (
@@ -93,7 +95,7 @@ const ProductForm = ({ onSubmit, initialData = {}, isEditing = false }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="price">Price (INR)</Label>
-              <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required />
+              <Input id="price" name="price" type="number" step="0.01" value={formData.price} onChange={handleChange} required />
             </div>
           </div>
 
