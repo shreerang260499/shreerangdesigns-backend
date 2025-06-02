@@ -1,38 +1,43 @@
 const express = require('express');
-const Cashfree = require('cashfree-pg');
 const router = express.Router();
+const { createOrder, verifyPayment } = require('../config/phonepe');
 
-// Cashfree configuration
-Cashfree.XClientId = process.env.CASHFREE_CLIENT_ID;
-Cashfree.XClientSecret = process.env.CASHFREE_CLIENT_SECRET;
-Cashfree.XEnvironment = process.env.CASHFREE_ENV || 'TEST'; // 'PROD' for production
-
-// Create Cashfree order
+// Create order
 router.post('/create-order', async (req, res) => {
   const { amount, currency = 'INR', orderId, customerName, customerEmail, customerPhone } = req.body;
   try {
     const orderPayload = {
-      order_id: orderId,
-      order_amount: amount,
-      order_currency: currency,
-      customer_details: {
-        customer_id: customerEmail,
-        customer_email: customerEmail,
-        customer_phone: customerPhone,
-        customer_name: customerName
-      }
+      merchantId: process.env.PHONEPE_MERCHANT_ID,
+      orderId,
+      amount,
+      currency,
+      customerDetails: {
+        name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+      },
     };
-    const response = await Cashfree.PGCreateOrder(orderPayload);
+    const response = await createOrder(orderPayload);
     res.json(response);
   } catch (err) {
-    res.status(500).json({ message: 'Cashfree order creation failed', error: err.message });
+    res.status(500).json({ message: 'PhonePe order creation failed', error: err.message });
   }
 });
 
-// Verify payment (Cashfree webhook or manual verification)
+// Verify payment (PhonePe webhook or manual verification)
 router.post('/verify', async (req, res) => {
-  // Implement webhook or manual verification as per Cashfree docs
-  res.json({ valid: true });
+  const { paymentId, orderId } = req.body;
+  try {
+    const paymentPayload = {
+      merchantId: process.env.PHONEPE_MERCHANT_ID,
+      paymentId,
+      orderId,
+    };
+    const response = await verifyPayment(paymentPayload);
+    res.json(response);
+  } catch (err) {
+    res.status(500).json({ message: 'PhonePe payment verification failed', error: err.message });
+  }
 });
 
 module.exports = router;
