@@ -31,6 +31,9 @@ const CartPage = () => {
   // Debug log to check cart items
   console.log('Cart items in CartPage:', items);
 
+  // Debug log to check cart items being rendered
+  console.log('Rendering cart items:', items);
+
   const loadCashfreeScript = () => {
     return new Promise((resolve) => {
       if (window.Cashfree) return resolve(true);
