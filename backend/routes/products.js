@@ -77,6 +77,9 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
     }
     
     // If an image was uploaded, add its path to the update data
+    if (Array.isArray(updateData.imageUrl)) {
+      updateData.imageUrl = updateData.imageUrl[0]; // Use the first URL if an array is sent
+    }
     if (req.file) {
       updateData.imageUrl = req.file.path.trim(); // Use Cloudinary URL and sanitize
     }

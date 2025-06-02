@@ -12,6 +12,13 @@ const initialState = {
   promoCode: null,
 };
 
+// Static promo codes for testing
+const PROMO_CODES = {
+  SAVE10: { percentage: 10 },
+  SAVE20: { percentage: 20 },
+  FLAT50: { fixedAmount: 50 },
+};
+
 // Load cart from localStorage
 const loadCartFromStorage = () => {
   if (typeof window === "undefined") return initialState;
