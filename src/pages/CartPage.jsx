@@ -28,6 +28,9 @@ const CartPage = () => {
   const navigate = useNavigate();
   const [promoCodeInput, setPromoCodeInput] = useState("");
   
+  // Debug log to check cart items
+  console.log('Cart items in CartPage:', items);
+
   const loadCashfreeScript = () => {
     return new Promise((resolve) => {
       if (window.Cashfree) return resolve(true);
