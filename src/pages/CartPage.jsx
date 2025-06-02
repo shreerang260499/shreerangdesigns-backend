@@ -183,7 +183,7 @@ const CartPage = () => {
                       className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-lg"
                       onClick={handleCheckout}
                     >
-                      Pay Securely with Cashfree
+                      Pay Now
                     </Button>
                     <Button 
                       variant="outline" 
