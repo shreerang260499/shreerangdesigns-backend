@@ -52,21 +52,22 @@ const cartReducer = (state, action) => {
   switch (action.type) {
     case "ADD_ITEM": {
       const existingItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
+        (item) => item._id === action.payload._id // Use _id as the unique identifier
       );
 
       if (existingItemIndex > -1) {
         // If the item already exists, increase its quantity
         const updatedItems = [...state.items];
         updatedItems[existingItemIndex].quantity += action.payload.quantity || 1;
-        // Debug log to check cart state after adding an item
-        console.log('Cart state after ADD_ITEM:', updatedItems);
+        console.log('Cart state after ADD_ITEM:', updatedItems); // Debug log
         return { ...state, items: updatedItems };
       } else {
         // Add the new item with a default quantity of 1
+        const updatedItems = [...state.items, { ...action.payload, quantity: 1 }];
+        console.log('Cart state after ADD_ITEM:', updatedItems); // Debug log
         return {
           ...state,
-          items: [...state.items, { ...action.payload, quantity: 1 }],
+          items: updatedItems,
         };
       }
     }
