@@ -1,8 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 const User = require('../models/User');
 
 const router = express.Router();
@@ -37,39 +36,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Google OAuth
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: '/api/auth/google/callback',
-}, async (accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await User.findOne({ email: profile.emails[0].value });
-    if (!user) {
-      user = new User({
-        name: profile.displayName,
-        email: profile.emails[0].value,
-        password: 'social', // placeholder
-        mobile: 'social', // placeholder
-      });
-      await user.save();
-    }
-    return done(null, user);
-  } catch (err) {
-    return done(err, null);
-  }
-}));
-
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-  const user = req.user;
-  const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1d' });
-  // Redirect to frontend with token
-  res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
-});
-
-// Get current user info (for social login JWT)
+// Get current user info
 router.get('/me', async (req, res) => {
   try {
     const auth = req.headers.authorization;

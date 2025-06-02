@@ -9,7 +9,6 @@ const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
 const promoCodeRoutes = require('./routes/promocodes');
 const resetRoutes = require('./routes/reset');
-const passport = require('passport');
 
 dotenv.config();
 
@@ -23,7 +22,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-app.use(passport.initialize());
 
 // Routes
 app.use('/api/auth', authRoutes);
