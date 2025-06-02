@@ -56,29 +56,17 @@ const cartReducer = (state, action) => {
       );
 
       if (existingItemIndex > -1) {
-        toast({
-          title: "Already in cart",
-          description: "This design is already in your cart.",
-          variant: "default",
-        });
-        return state;
+        // If the item already exists, increase its quantity
+        const updatedItems = [...state.items];
+        updatedItems[existingItemIndex].quantity += action.payload.quantity || 1;
+        return { ...state, items: updatedItems };
+      } else {
+        // Add the new item with a default quantity of 1
+        return {
+          ...state,
+          items: [...state.items, { ...action.payload, quantity: 1 }],
+        };
       }
-
-      const newItems = [...state.items, { ...action.payload, quantity: 1 }];
-      const { total, discount } = calculateTotals(newItems, state.promoCode);
-      
-      toast({
-        title: "Added to cart",
-        description: `${action.payload.name} has been added to your cart.`,
-        variant: "default",
-      });
-      
-      return {
-        ...state,
-        items: newItems,
-        total,
-        discount,
-      };
     }
     
     case "REMOVE_ITEM": {
