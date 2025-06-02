@@ -33,9 +33,13 @@ const loadCartFromStorage = () => {
 };
 
 const calculateTotals = (items, promoCode) => {
-  let subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  let discount = 0;
+  const filteredItems = items.filter(item => item.quantity > 0); // Ensure no items with quantity 0
+  console.log('Calculating totals for items:', filteredItems); // Debug log
 
+  let subtotal = filteredItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  console.log('Calculated subtotal:', subtotal); // Debug log
+
+  let discount = 0;
   if (promoCode && PROMO_CODES[promoCode]) {
     const codeDetails = PROMO_CODES[promoCode];
     if (codeDetails.percentage) {
@@ -43,8 +47,12 @@ const calculateTotals = (items, promoCode) => {
     } else if (codeDetails.fixedAmount) {
       discount = Math.min(subtotal, codeDetails.fixedAmount); // Ensure discount isn't more than subtotal
     }
+    console.log('Calculated discount:', discount); // Debug log
   }
+
   const total = subtotal - discount;
+  console.log('Calculated total:', total); // Debug log
+
   return { subtotal, discount, total };
 };
 
@@ -52,39 +60,52 @@ const cartReducer = (state, action) => {
   switch (action.type) {
     case "ADD_ITEM": {
       const existingItemIndex = state.items.findIndex(
-        (item) => item._id === action.payload._id // Use _id as the unique identifier
+        (item) => item._id === action.payload._id
       );
 
+      let updatedItems = [...state.items];
+      const quantity = action.payload.quantity ?? 1; // Use nullish coalescing to allow explicit 0
+
       if (existingItemIndex > -1) {
-        // If the item already exists, increase its quantity
-        const updatedItems = [...state.items];
-        updatedItems[existingItemIndex].quantity += action.payload.quantity || 1;
-        console.log('Cart state after ADD_ITEM:', updatedItems); // Debug log
-        return { ...state, items: updatedItems };
-      } else {
-        // Add the new item with a default quantity of 1
-        const updatedItems = [...state.items, { ...action.payload, quantity: 1 }];
-        console.log('Cart state after ADD_ITEM:', updatedItems); // Debug log
-        return {
-          ...state,
-          items: updatedItems,
-        };
+        if (quantity > 0) {
+          updatedItems[existingItemIndex] = {
+            ...updatedItems[existingItemIndex],
+            quantity: updatedItems[existingItemIndex].quantity + quantity
+          };
+        } else {
+          updatedItems.splice(existingItemIndex, 1);
+        }
+      } else if (quantity > 0) {
+        updatedItems.push({
+          ...action.payload,
+          quantity
+        });
       }
+
+      // Filter out any items with quantity <= 0
+      updatedItems = updatedItems.filter(item => item.quantity > 0);
+      const { subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
+      return { ...state, items: updatedItems, subtotal, total, discount };
     }
-    
+
     case "REMOVE_ITEM": {
-      console.log('Cart state before REMOVE_ITEM:', state.items); // Debug log
-      const newItems = state.items.filter(item => item._id !== action.payload); // Use _id for filtering
-      console.log('Cart state after REMOVE_ITEM:', newItems); // Debug log
+      const existingItemIndex = state.items.findIndex(item => item._id === action.payload);
+      if (existingItemIndex === -1) return state;
 
-      const { total, discount } = calculateTotals(newItems, state.promoCode);
+      let updatedItems = [...state.items];
+      if (updatedItems[existingItemIndex].quantity > 1) {
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity - 1
+        };
+      } else {
+        updatedItems.splice(existingItemIndex, 1);
+      }
 
-      toast({
-        title: "Removed from cart",
-        description: "Item has been removed from your cart.",
-      });
-
-      return { ...state, items: newItems, total, discount };
+      // Filter out any items with quantity <= 0
+      updatedItems = updatedItems.filter(item => item.quantity > 0);
+      const { subtotal, total, discount } = calculateTotals(updatedItems, state.promoCode);
+      return { ...state, items: updatedItems, subtotal, total, discount };
     }
     
     case "APPLY_PROMO_CODE": {
