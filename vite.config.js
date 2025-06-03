@@ -2,6 +2,10 @@ import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { createLogger, defineConfig } from 'vite';
 import viteImagemin from 'vite-plugin-imagemin';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import postcssImport from 'postcss-import';
+import postcssNesting from 'postcss-nesting';
 
 const configHorizonsViteErrorHandler = `
 const observer = new MutationObserver((mutations) => {
@@ -215,6 +219,16 @@ export default defineConfig({
 			},
 		})
 	],
+	css: {
+		postcss: {
+			plugins: [
+				postcssImport(),
+				tailwindcss(),
+				postcssNesting(),
+				autoprefixer(),
+			],
+		},
+	},
 	build: {
 		outDir: 'dist',
 		minify: 'terser',
