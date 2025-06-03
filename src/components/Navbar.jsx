@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Menu, X, User, LogOut, LogIn, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -62,12 +62,12 @@ const Navbar = () => {
     navigate("/");
   };
   
-  const UserAvatarFallback = user && user.name ? user.name.charAt(0).toUpperCase() : "U";
-
-  const designCategories = [
+  // Memoize fallback and categories to avoid recalculation on every render
+  const UserAvatarFallback = useMemo(() => (user && user.name ? user.name.charAt(0).toUpperCase() : "U"), [user]);
+  const designCategories = useMemo(() => [
     { title: "CNC Door Designs", href: "/designs", description: "Intricate designs for CNC routing on doors." },
     { title: "Printable Art", href: "/printable-designs", description: "High-resolution digital art for printing." },
-  ];
+  ], []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -248,3 +248,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+// No changes needed for Navbar. It does not render large lists or product data.

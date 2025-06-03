@@ -73,6 +73,6 @@ const ProductCard = React.memo(({ product }) => {
       </Card>
     </motion.div>
   );
-};
+});
 
 export default ProductCard;

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const HomePage = () => {
-  const { products, loading } = useProducts();
+  const { products, loading, error } = useProducts();
 
   const features = [
     {
@@ -30,6 +30,10 @@ const HomePage = () => {
 
   if (loading) {
     return <div className="container py-12 text-center">Loading page content...</div>;
+  }
+
+  if (error) {
+    return <div className="container py-12 text-center text-red-600">Failed to load products: {error}</div>;
   }
 
   return (

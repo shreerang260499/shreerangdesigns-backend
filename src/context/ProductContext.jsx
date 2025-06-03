@@ -10,6 +10,7 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [cache, setCache] = useState(new Map());
@@ -32,6 +33,7 @@ export const ProductProvider = ({ children }) => {
     const fetchProducts = async () => {
       if (!hasMore) return;
       setLoading(true);
+      setError(null);
       try {
         const limit = 20; // Number of products per page
         const data = await apiRequest(`${API_URL}/products?page=${page}&limit=${limit}`);
@@ -40,6 +42,8 @@ export const ProductProvider = ({ children }) => {
         }
         setProducts(prev => page === 1 ? data : [...prev, ...data]);
       } catch (err) {
+        setError(err.message || 'Failed to load products');
+        console.error('Product fetch error:', err);
         if (page === 1) setProducts([]);
       } finally {
         setLoading(false);
@@ -117,13 +121,14 @@ export const ProductProvider = ({ children }) => {
   const value = React.useMemo(() => ({
     products,
     loading,
+    error,
     hasMore,
     loadMore,
     addProduct,
     updateProduct,
     deleteProduct,
     getProductById: memoizedGetProductById
-  }), [products, loading, hasMore, loadMore, addProduct, updateProduct, deleteProduct, memoizedGetProductById]);
+  }), [products, loading, error, hasMore, loadMore, addProduct, updateProduct, deleteProduct, memoizedGetProductById]);
 
   return (
     <ProductContext.Provider value={value}>

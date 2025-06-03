@@ -7,6 +7,12 @@ import ProductCard from "@/components/ProductCard";
 import CategoryFilter from "@/components/CategoryFilter";
 import SearchBar from "@/components/SearchBar";
 import { filterProductsByCategory, searchProducts } from "@/lib/utils";
+import { FixedSizeGrid as Grid } from "react-window";
+import useWindowDimensions from "../lib/useWindowDimensions"; // We'll add a simple hook for responsive grid width
+
+const GRID_COLUMN_COUNT = 4; // xl: 4 columns
+const GRID_ROW_HEIGHT = 370; // px, adjust as needed for ProductCard
+const GRID_GAP = 24; // px, matches gap-6
 
 const DesignsPage = () => {
   const location = useLocation();
@@ -77,6 +83,28 @@ const DesignsPage = () => {
     }
   };
 
+  // Responsive column count
+  const { width: windowWidth } = useWindowDimensions();
+  let columnCount = 1;
+  if (windowWidth >= 1280) columnCount = 4;
+  else if (windowWidth >= 1024) columnCount = 3;
+  else if (windowWidth >= 640) columnCount = 2;
+
+  const columnWidth = Math.floor((windowWidth - 2 * 32 - (columnCount - 1) * GRID_GAP) / columnCount); // 32px container padding
+  const rowCount = Math.ceil(filteredProducts.length / columnCount);
+
+  // Virtualized cell renderer
+  const Cell = ({ columnIndex, rowIndex, style }) => {
+    const index = rowIndex * columnCount + columnIndex;
+    if (index >= filteredProducts.length) return null;
+    const product = filteredProducts[index];
+    return (
+      <div style={{ ...style, left: style.left + GRID_GAP * columnIndex, top: style.top + GRID_GAP * rowIndex, width: style.width - GRID_GAP, height: style.height - GRID_GAP }}>
+        <ProductCard key={product._id} product={product} />
+      </div>
+    );
+  };
+
   if (productsLoading) {
     return <div className="container py-12 text-center">Loading designs...</div>;
   }
@@ -100,26 +128,27 @@ const DesignsPage = () => {
       </div>
       
       {filteredProducts.length > 0 ? (
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
-          {filteredProducts.map(product => (
-            <ProductCard key={product._id} product={product} />
-          ))}
+        <div style={{ width: "100%", minHeight: 400, position: "relative" }}>
+          <Grid
+            columnCount={columnCount}
+            columnWidth={columnWidth}
+            height={Math.min(3, rowCount) * GRID_ROW_HEIGHT + (Math.min(3, rowCount) - 1) * GRID_GAP}
+            rowCount={rowCount}
+            rowHeight={GRID_ROW_HEIGHT}
+            width={windowWidth - 2 * 32}
+            style={{ overflowX: "hidden" }}
+          >
+            {Cell}
+          </Grid>
+          {/* Infinite scroll trigger */}
           {hasMore && (
-            <div 
-              ref={observerTarget}
-              className="col-span-full flex justify-center py-8"
-            >
+            <div ref={observerTarget} className="col-span-full flex justify-center py-8">
               {productsLoading && (
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               )}
             </div>
           )}
-        </motion.div>
+        </div>
       ) : (
         <div className="text-center py-12">
           <h3 className="text-lg font-medium mb-2">No designs found</h3>

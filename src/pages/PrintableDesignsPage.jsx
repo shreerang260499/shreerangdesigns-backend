@@ -7,6 +7,12 @@ import ProductCard from "@/components/ProductCard";
 import CategoryFilter from "@/components/CategoryFilter";
 import SearchBar from "@/components/SearchBar";
 import { filterProductsByCategory, searchProducts } from "@/lib/utils";
+import { FixedSizeGrid as Grid } from "react-window";
+import useWindowDimensions from "../lib/useWindowDimensions";
+
+const GRID_COLUMN_COUNT = 4;
+const GRID_ROW_HEIGHT = 370;
+const GRID_GAP = 24;
 
 const PrintableDesignsPage = () => {
   const location = useLocation();
@@ -53,6 +59,27 @@ const PrintableDesignsPage = () => {
     },
   };
 
+  // Responsive column count
+  const { width: windowWidth } = useWindowDimensions();
+  let columnCount = 1;
+  if (windowWidth >= 1280) columnCount = 4;
+  else if (windowWidth >= 1024) columnCount = 3;
+  else if (windowWidth >= 640) columnCount = 2;
+
+  const columnWidth = Math.floor((windowWidth - 2 * 32 - (columnCount - 1) * GRID_GAP) / columnCount);
+  const rowCount = Math.ceil(filteredProducts.length / columnCount);
+
+  const Cell = ({ columnIndex, rowIndex, style }) => {
+    const index = rowIndex * columnCount + columnIndex;
+    if (index >= filteredProducts.length) return null;
+    const product = filteredProducts[index];
+    return (
+      <div style={{ ...style, left: style.left + GRID_GAP * columnIndex, top: style.top + GRID_GAP * rowIndex, width: style.width - GRID_GAP, height: style.height - GRID_GAP }}>
+        <ProductCard key={product._id} product={product} />
+      </div>
+    );
+  };
+
   if (productsLoading) {
     return <div className="container py-12 text-center">Loading printable designs...</div>;
   }
@@ -76,16 +103,19 @@ const PrintableDesignsPage = () => {
       </div>
 
       {filteredProducts.length > 0 ? (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
-          {filteredProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </motion.div>
+        <div style={{ width: "100%", minHeight: 400, position: "relative" }}>
+          <Grid
+            columnCount={columnCount}
+            columnWidth={columnWidth}
+            height={Math.min(3, rowCount) * GRID_ROW_HEIGHT + (Math.min(3, rowCount) - 1) * GRID_GAP}
+            rowCount={rowCount}
+            rowHeight={GRID_ROW_HEIGHT}
+            width={windowWidth - 2 * 32}
+            style={{ overflowX: "hidden" }}
+          >
+            {Cell}
+          </Grid>
+        </div>
       ) : (
         <div className="text-center py-12">
           <h3 className="text-lg font-medium mb-2">No printable art found</h3>
