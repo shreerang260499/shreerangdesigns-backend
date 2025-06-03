@@ -37,7 +37,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/promocodes', promoCodeRoutes);
 app.use('/api/reset', resetRoutes);
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
