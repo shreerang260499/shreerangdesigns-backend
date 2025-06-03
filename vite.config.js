@@ -188,25 +188,61 @@ export default defineConfig({
 		react(),
 		addTransformIndexHtml,
 		viteImagemin({
-			gifsicle: { optimizationLevel: 7, interlaced: false },
-			optipng: { optimizationLevel: 7 },
-			mozjpeg: { quality: 75 },
-			pngquant: { quality: [0.7, 0.9], speed: 3 },
+			gifsicle: {
+				optimizationLevel: 7,
+				interlaced: false,
+			},
+			optipng: {
+				optimizationLevel: 7,
+			},
+			mozjpeg: {
+				quality: 80,
+			},
+			pngquant: {
+				quality: [0.8, 0.9],
+				speed: 4,
+			},
 			svgo: {
 				plugins: [
-					{ name: 'removeViewBox' },
-					{ name: 'removeEmptyAttrs', active: false },
+					{
+						name: 'removeViewBox',
+					},
+					{
+						name: 'removeEmptyAttrs',
+						active: false,
+					},
 				],
 			},
-			webp: { quality: 75 },
 		})
 	],
-	server: {
-		cors: true,
-		headers: {
-			'Cross-Origin-Embedder-Policy': 'credentialless',
+	build: {
+		outDir: 'dist',
+		minify: 'terser',
+		sourcemap: false,
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vendor: ['react', 'react-dom', 'react-router-dom'],
+					ui: [
+						'@radix-ui/react-alert-dialog',
+						'@radix-ui/react-avatar',
+						'@radix-ui/react-checkbox',
+						'@radix-ui/react-dialog',
+						'@radix-ui/react-dropdown-menu',
+					],
+				},
+			},
 		},
-		allowedHosts: true,
+	},
+	server: {
+		port: 5173,
+		proxy: {
+			'/api': {
+				target: process.env.VITE_API_URL || 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+		},
 	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
