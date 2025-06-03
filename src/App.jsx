@@ -4,6 +4,7 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProductProvider } from "@/context/ProductContext";
 import { Toaster } from "@/components/ui/toaster";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Layout Components
 import Navbar from "@/components/Navbar";
@@ -35,37 +36,46 @@ import EditProductPage from "@/pages/admin/EditProductPage";
 import CustomerManagementPage from "@/pages/admin/CustomerManagementPage";
 import PromoCodesPage from "@/pages/admin/PromoCodesPage";
 
+// Log environment information
+console.log('Environment:', {
+  mode: import.meta.env.MODE,
+  apiUrl: import.meta.env.VITE_API_URL,
+  isDev: import.meta.env.DEV,
+  isProd: import.meta.env.PROD
+});
 
 function App() {
   return (
-    <AuthProvider>
-      <ProductProvider>
-        <CartProvider>
-          <Router>
-            <div className="flex min-h-screen flex-col">
-              <Routes>
-                <Route path="/admin/*" element={
-                  <ProtectedRoute adminRequired={true}>
-                    <AdminLayout>
-                      <Routes>
-                        <Route path="dashboard" element={<AdminDashboardPage />} />
-                        <Route path="products" element={<ManageProductsPage />} />
-                        <Route path="products/add" element={<AddProductPage />} />
-                        <Route path="products/edit/:id" element={<EditProductPage />} />
-                        <Route path="customers" element={<CustomerManagementPage />} />
-                        <Route path="promocodes" element={<PromoCodesPage />} />
-                      </Routes>
-                    </AdminLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/*" element={<MainApp />} />
-              </Routes>
-            </div>
-            <Toaster />
-          </Router>
-        </CartProvider>
-      </ProductProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ProductProvider>
+          <CartProvider>
+            <Router>
+              <div className="flex min-h-screen flex-col">
+                <Routes>
+                  <Route path="/admin/*" element={
+                    <ProtectedRoute adminRequired={true}>
+                      <AdminLayout>
+                        <Routes>
+                          <Route path="dashboard" element={<AdminDashboardPage />} />
+                          <Route path="products" element={<ManageProductsPage />} />
+                          <Route path="products/add" element={<AddProductPage />} />
+                          <Route path="products/edit/:id" element={<EditProductPage />} />
+                          <Route path="customers" element={<CustomerManagementPage />} />
+                          <Route path="promocodes" element={<PromoCodesPage />} />
+                        </Routes>
+                      </AdminLayout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/*" element={<MainApp />} />
+                </Routes>
+              </div>
+              <Toaster />
+            </Router>
+          </CartProvider>
+        </ProductProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

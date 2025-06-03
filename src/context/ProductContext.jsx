@@ -2,8 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiRequest } from '@/lib/api';
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from '@/context/AuthContext';
+import { initialProducts } from '@/data/products';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+console.log('API URL:', API_URL); // Debug API URL
 
 const ProductContext = createContext();
 
@@ -28,37 +31,61 @@ export const ProductProvider = ({ children }) => {
     return product;
   }, [products, cache]);
 
-  // Fetch products with pagination
+  // Fetch products with pagination and better error handling
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!hasMore || loading) return; // Prevent concurrent loads
+      if (!hasMore || loading) return;
       setLoading(true);
       setError(null);
+      
+      console.log('Fetching products, page:', page); // Debug pagination
+      
       try {
-        const limit = 20; // Number of products per page
+        const limit = 20;
+        console.log('Fetching from:', `${API_URL}/products?page=${page}&limit=${limit}`); // Debug URL
+        
         const data = await apiRequest(`${API_URL}/products?page=${page}&limit=${limit}`);
-        // Remove duplicates by _id
+        console.log('Received products:', data?.length || 0); // Debug response
+        
+        if (!data || !Array.isArray(data)) {
+          console.error('Invalid products data:', data);
+          throw new Error('Invalid response from server');
+        }
+
         setProducts(prev => {
           const existingIds = new Set(prev.map(p => p._id));
           const newProducts = data.filter(p => !existingIds.has(p._id));
-          return page === 1 ? data : [...prev, ...newProducts];
+          const result = page === 1 ? data : [...prev, ...newProducts];
+          console.log('Total products after update:', result.length); // Debug state update
+          return result;
         });
+
         if (!data || data.length < limit) {
           setHasMore(false);
-        }
-        if (!data || data.length === 0) {
-          setHasMore(false);
+          console.log('No more products to load'); // Debug pagination end
         }
       } catch (err) {
-        setError(err.message || 'Failed to load products');
-        console.error('Product fetch error:', err);
-        if (page === 1) setProducts([]);
+        const errorMessage = err.message || 'Failed to load products';
+        console.error('Product fetch error:', err, '\nAPI URL:', API_URL); // Detailed error log
+        setError(errorMessage);
+        
+        if (page === 1) {
+          console.log('Falling back to static products'); // Debug fallback
+          setProducts(initialProducts);
+          setHasMore(false);
+        }
+        
+        toast({ 
+          title: 'Error loading products',
+          description: errorMessage,
+          variant: 'destructive'
+        });
       } finally {
         setLoading(false);
       }
     };
+
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   // Add product (admin)

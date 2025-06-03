@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "clean": "rimraf dist",
-    "deploy": "npm run clean && npm run build"
+    "deploy": "npm run clean && npm run build",
+    "deploy:render": "npm run deploy && cd backend && git add . && git commit -m 'Deploy: update frontend build' || echo 'No changes to commit' && git push",
+    "deploy:full": "npm run deploy && rimraf backend/dist && xcopy /E /I /Y dist backend\\dist && cd backend && git add . && git commit -m \"Deploy: update frontend build\" || echo No changes to commit && git push"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

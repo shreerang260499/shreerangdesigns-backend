@@ -1,7 +1,6 @@
-
 export const initialProducts = [
   {
-    id: "1",
+    _id: "1",
     name: "Classic Floral Door Design",
     description: "Elegant floral pattern perfect for traditional homes. This design features intricate floral motifs that add a touch of sophistication to any door.",
     price: 1499,
@@ -15,7 +14,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "2",
+    _id: "2",
     name: "Modern Geometric Pattern",
     description: "Clean lines and geometric shapes for contemporary spaces. This minimalist design brings a modern aesthetic to your doors.",
     price: 1899,
@@ -29,7 +28,7 @@ export const initialProducts = [
     bestseller: false
   },
   {
-    id: "3",
+    _id: "3",
     name: "Traditional Jali Design",
     description: "Intricate jali work inspired by Indian heritage architecture. This design allows for both privacy and ventilation.",
     price: 2199,
@@ -43,7 +42,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "4",
+    _id: "4",
     name: "Contemporary Abstract Pattern",
     description: "Bold abstract design for statement doors. This eye-catching pattern will make your doors stand out.",
     price: 1799,
@@ -57,7 +56,7 @@ export const initialProducts = [
     bestseller: false
   },
   {
-    id: "5",
+    _id: "5",
     name: "Mandala Door Design",
     description: "Spiritual mandala pattern with intricate details. This design brings a sense of peace and harmony to your space.",
     price: 2499,
@@ -71,7 +70,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "6",
+    _id: "6",
     name: "Minimalist Line Art",
     description: "Simple yet elegant line-based design. Perfect for those who appreciate understated elegance.",
     price: 1299,
@@ -85,7 +84,7 @@ export const initialProducts = [
     bestseller: false
   },
   {
-    id: "7",
+    _id: "7",
     name: "Ornate Royal Door Design",
     description: "Luxurious pattern inspired by royal palaces. This design brings a sense of grandeur to any entrance.",
     price: 2999,
@@ -99,7 +98,7 @@ export const initialProducts = [
     bestseller: false
   },
   {
-    id: "8",
+    _id: "8",
     name: "Nature-Inspired Tree Design",
     description: "Beautiful tree pattern that brings nature indoors. This organic design creates a connection with the natural world.",
     price: 1899,
@@ -113,7 +112,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "printable-1",
+    _id: "printable-1",
     name: "Abstract Watercolor Splash",
     description: "Vibrant abstract watercolor art, perfect for modern home decor. High-resolution for crisp prints.",
     price: 499,
@@ -126,7 +125,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "printable-2",
+    _id: "printable-2",
     name: "Minimalist Botanical Line Art",
     description: "Elegant botanical line drawing. Ideal for a clean and sophisticated look.",
     price: 399,
@@ -139,7 +138,7 @@ export const initialProducts = [
     bestseller: false
   },
   {
-    id: "printable-3",
+    _id: "printable-3",
     name: "Geometric Landscape",
     description: "Modern geometric interpretation of a mountain landscape. Unique wall art.",
     price: 599,
@@ -152,7 +151,7 @@ export const initialProducts = [
     bestseller: true
   },
   {
-    id: "printable-4",
+    _id: "printable-4",
     name: "Cute Animal Nursery Print",
     description: "Adorable animal illustration for a child's nursery or playroom.",
     price: 349,
