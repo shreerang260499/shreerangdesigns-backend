@@ -31,16 +31,24 @@ export const ProductProvider = ({ children }) => {
   // Fetch products with pagination
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!hasMore) return;
+      if (!hasMore || loading) return; // Prevent concurrent loads
       setLoading(true);
       setError(null);
       try {
         const limit = 20; // Number of products per page
         const data = await apiRequest(`${API_URL}/products?page=${page}&limit=${limit}`);
-        if (data.length < limit) {
+        // Remove duplicates by _id
+        setProducts(prev => {
+          const existingIds = new Set(prev.map(p => p._id));
+          const newProducts = data.filter(p => !existingIds.has(p._id));
+          return page === 1 ? data : [...prev, ...newProducts];
+        });
+        if (!data || data.length < limit) {
           setHasMore(false);
         }
-        setProducts(prev => page === 1 ? data : [...prev, ...data]);
+        if (!data || data.length === 0) {
+          setHasMore(false);
+        }
       } catch (err) {
         setError(err.message || 'Failed to load products');
         console.error('Product fetch error:', err);
@@ -50,6 +58,7 @@ export const ProductProvider = ({ children }) => {
       }
     };
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   // Add product (admin)

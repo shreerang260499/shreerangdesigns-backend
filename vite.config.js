@@ -1,6 +1,7 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { createLogger, defineConfig } from 'vite';
+import viteImagemin from 'vite-plugin-imagemin';
 
 const configHorizonsViteErrorHandler = `
 const observer = new MutationObserver((mutations) => {
@@ -183,7 +184,23 @@ logger.error = (msg, options) => {
 
 export default defineConfig({
 	customLogger: logger,
-	plugins: [react(), addTransformIndexHtml],
+	plugins: [
+		react(),
+		addTransformIndexHtml,
+		viteImagemin({
+			gifsicle: { optimizationLevel: 7, interlaced: false },
+			optipng: { optimizationLevel: 7 },
+			mozjpeg: { quality: 75 },
+			pngquant: { quality: [0.7, 0.9], speed: 3 },
+			svgo: {
+				plugins: [
+					{ name: 'removeViewBox' },
+					{ name: 'removeEmptyAttrs', active: false },
+				],
+			},
+			webp: { quality: 75 },
+		})
+	],
 	server: {
 		cors: true,
 		headers: {
