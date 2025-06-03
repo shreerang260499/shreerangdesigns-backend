@@ -1,0 +1,29 @@
+{
+  "default": {
+    "image": "/hero/images/default-hero.jpg",
+    "title": "Creative CNC % Digital Door Designs for Your Home",
+    "description": "Explore our unique collection of CNC and digital door designs. Perfect for adding a touch of creativity to your home.",
+    "description": "Elevate your space with our exclusive collection of digital CNC door designs. Download instantly and bring elegance to your doorways.",
+    "primaryButton": {
+      "text": "Browse Designs",
+      "link": "/designs"
+    },
+    "secondaryButton": {
+      "text": "Learn More",
+      "link": "/about"
+    }
+  },
+  "modern": {
+    "image": "/hero/images/modern-hero.jpg",
+    "title": "Modern Door Designs for Contemporary Homes",
+    "description": "Discover our collection of contemporary CNC door designs. Perfect for modern architectural styles.",
+    "primaryButton": {
+      "text": "View Modern Collection",
+      "link": "/designs?style=modern"
+    },
+    "secondaryButton": {
+      "text": "About Us",
+      "link": "/about"
+    }
+  }
+}
