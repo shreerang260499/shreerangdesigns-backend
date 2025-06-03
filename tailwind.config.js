@@ -1,12 +1,21 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-	darkMode: ['class'],
-	content: [
-		'./pages/**/*.{js,jsx}',
-		'./components/**/*.{js,jsx}',
-		'./app/**/*.{js,jsx}',
-		'./src/**/*.{js,jsx}',
-	],
+export default {
+  darkMode: ['class'],
+  content: [
+    './index.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
+  theme: {
+    extend: {
+      backgroundColor: {
+        background: 'hsl(var(--background))',
+      },
+      textColor: {
+        foreground: 'hsl(var(--foreground))',
+      },
+      borderColor: {
+        DEFAULT: 'hsl(var(--border))',
+      },
 	theme: {
 		container: {
 			center: true,
