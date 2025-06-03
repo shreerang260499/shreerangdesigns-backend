@@ -8,8 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 
-const ProductCard = ({ product }) => {
+const ProductCard = React.memo(({ product }) => {
   const { addItem } = useCart();
+  
+  const handleAddToCart = React.useCallback(() => {
+    addItem(product);
+  }, [product._id, addItem]);
 
   return (
     <motion.div

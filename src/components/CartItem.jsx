@@ -7,10 +7,11 @@ const CartItem = ({ item, onRemove }) => {
   return (
     <div className="flex items-center py-4 border-b">
       <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-        <img  
+        <LazyImage  
           className="h-full w-full object-cover" 
           alt={item.name}
-          src={item.imageUrl} // Use the product's imageUrl field
+          src={item.imageUrl}
+          onError={(e) => e.target.src = "https://via.placeholder.com/800x800?text=Image+Error"}
         />
       </div>
       

@@ -12,7 +12,20 @@ export const ProductProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [cache, setCache] = useState(new Map());
   const { token } = useAuth();
+
+  // Cache product data by ID for faster lookups
+  const memoizedGetProductById = React.useCallback((productId) => {
+    if (cache.has(productId)) {
+      return cache.get(productId);
+    }
+    const product = products.find(p => p._id === productId);
+    if (product) {
+      setCache(prev => new Map(prev).set(productId, product));
+    }
+    return product;
+  }, [products, cache]);
 
   // Fetch products with pagination
   useEffect(() => {
@@ -101,17 +114,19 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const value = React.useMemo(() => ({
+    products,
+    loading,
+    hasMore,
+    loadMore,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    getProductById: memoizedGetProductById
+  }), [products, loading, hasMore, loadMore, addProduct, updateProduct, deleteProduct, memoizedGetProductById]);
+
   return (
-    <ProductContext.Provider value={{ 
-      products, 
-      loading, 
-      hasMore,
-      loadMore,
-      addProduct, 
-      updateProduct, 
-      deleteProduct, 
-      getProductById 
-    }}>
+    <ProductContext.Provider value={value}>
       {children}
     </ProductContext.Provider>
   );

@@ -154,9 +154,16 @@ const cartReducer = (state, action) => {
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState, loadCartFromStorage);
 
+  // Debounce the localStorage update to prevent excessive writes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(state));
-  }, [state]);
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem("cart", JSON.stringify({
+        items: state.items,
+        promoCode: state.promoCode
+      }));
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [state.items, state.promoCode]);
 
   const { token, user } = useAuth();
 
